@@ -1,80 +1,81 @@
-const bookings = JSON.parse(localStorage.getItem("bookings") || "{}");
 const calendar = document.getElementById("calendar");
 const timeModal = document.getElementById("time-modal");
 const confirmModal = document.getElementById("confirm-modal");
-const startTimeInput = document.getElementById("start-time");
-const endTimeInput = document.getElementById("end-time");
-const confirmText = document.getElementById("confirm-text");
-const saveTimeBtn = document.getElementById("save-time-btn");
-const closeTimeBtn = document.getElementById("close-time-btn");
-const confirmBtn = document.getElementById("confirm-btn");
-const cancelBtn = document.getElementById("cancel-btn");
+const modalOverlay = document.getElementById("modal-overlay");
+
 let selectedDate = null;
-let currentUser = "current-user"; // Имя текущего пользователя
+let reservations = {};
 
-function renderCalendar() {
-  const today = new Date();
-  const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+function generateCalendar() {
+  const currentDate = new Date();
+  const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+  
+  // Очистить календарь
+  calendar.innerHTML = '';
 
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = `${today.getFullYear()}-${today.getMonth() + 1}-${day}`;
-    const dateElement = document.createElement("div");
-    dateElement.className = "date";
-    dateElement.textContent = day.toString();
-
-    dateElement.addEventListener("click", () => handleDateClick(date));
-    calendar.appendChild(dateElement);
+  for (let i = 1; i <= daysInMonth; i++) {
+    const dayButton = document.createElement("button");
+    dayButton.textContent = i;
+    dayButton.onclick = () => handleDayClick(i);
+    calendar.appendChild(dayButton);
   }
 }
 
-function handleDateClick(date) {
-  selectedDate = date;
-
-  if (bookings[date]) {
-    const booking = bookings[date].find((b) => b.user === currentUser);
-    if (booking) {
-      confirmText.textContent = `Вы точно хотите снять бронь на ${booking.startTime} - ${booking.endTime}?`;
-      confirmModal.classList.remove("hidden");
-    } else {
-      alert("Это время уже забронировано другим пользователем.");
-    }
+function handleDayClick(day) {
+  if (reservations[day]) {
+    showConfirmModal(day);
   } else {
-    timeModal.classList.remove("hidden");
+    showTimeModal(day);
   }
 }
 
-saveTimeBtn.addEventListener("click", () => {
-  const startTime = startTimeInput.value;
-  const endTime = endTimeInput.value;
+function showTimeModal(day) {
+  selectedDate = day;
+  timeModal.classList.remove("hidden");
+  modalOverlay.classList.remove("hidden");
+}
 
+function showConfirmModal(day) {
+  const confirmText = document.getElementById("confirm-text");
+  confirmText.textContent = `Вы точно хотите снять бронь на ${day}?`;
+  confirmModal.classList.remove("hidden");
+  modalOverlay.classList.remove("hidden");
+}
+
+function hideModals() {
+  timeModal.classList.add("hidden");
+  confirmModal.classList.add("hidden");
+  modalOverlay.classList.add("hidden");
+}
+
+document.getElementById("save-time-btn").addEventListener("click", () => {
+  const startTime = document.getElementById("start-time").value;
+  const endTime = document.getElementById("end-time").value;
+  
   if (!startTime || !endTime) {
     alert("Пожалуйста, выберите время.");
     return;
   }
 
-  if (!bookings[selectedDate]) bookings[selectedDate] = [];
-
-  bookings[selectedDate].push({ date: selectedDate, startTime, endTime, user: currentUser });
-  localStorage.setItem("bookings", JSON.stringify(bookings));
-  timeModal.classList.add("hidden");
-  alert(`Вы успешно забронировали ${selectedDate} ${startTime} - ${endTime}`);
-  location.reload();
+  reservations[selectedDate] = { startTime, endTime };
+  alert(`Вы забронировали ${selectedDate} с ${startTime} до ${endTime}`);
+  hideModals();
+  generateCalendar();
 });
 
-closeTimeBtn.addEventListener("click", () => {
-  timeModal.classList.add("hidden");
+document.getElementById("close-time-btn").addEventListener("click", () => {
+  hideModals();
 });
 
-confirmBtn.addEventListener("click", () => {
-  bookings[selectedDate] = bookings[selectedDate].filter((b) => b.user !== currentUser);
-  localStorage.setItem("bookings", JSON.stringify(bookings));
-  confirmModal.classList.add("hidden");
-  alert(`Бронь снята.`);
-  location.reload();
+document.getElementById("confirm-btn").addEventListener("click", () => {
+  delete reservations[selectedDate];
+  alert(`Бронь на ${selectedDate} снята.`);
+  hideModals();
+  generateCalendar();
 });
 
-cancelBtn.addEventListener("click", () => {
-  confirmModal.classList.add("hidden");
+document.getElementById("cancel-btn").addEventListener("click", () => {
+  hideModals();
 });
 
-document.addEventListener("DOMContentLoaded", renderCalendar);
+generateCalendar();  // Генерация календаря при загрузке страницы
