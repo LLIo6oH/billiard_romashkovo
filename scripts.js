@@ -1,23 +1,16 @@
-type Booking = {
-    date: string;
-    startTime: string;
-    endTime: string;
-    user: string; // Имя пользователя
-};
-
-const bookings: Record<string, Booking[]> = JSON.parse(localStorage.getItem('bookings') || '{}');
-const calendar = document.getElementById('calendar')!;
-const timeModal = document.getElementById('time-modal')!;
-const confirmModal = document.getElementById('confirm-modal')!;
-const startTimeInput = document.getElementById('start-time') as HTMLInputElement;
-const endTimeInput = document.getElementById('end-time') as HTMLInputElement;
-const confirmText = document.getElementById('confirm-text')!;
-const saveTimeBtn = document.getElementById('save-time-btn')!;
-const closeTimeBtn = document.getElementById('close-time-btn')!;
-const confirmBtn = document.getElementById('confirm-btn')!;
-const cancelBtn = document.getElementById('cancel-btn')!;
-let selectedDate: string | null = null;
-let currentUser = 'current-user'; // Замените на реальное имя пользователя
+const bookings = JSON.parse(localStorage.getItem('bookings') || '{}');
+const calendar = document.getElementById('calendar');
+const timeModal = document.getElementById('time-modal');
+const confirmModal = document.getElementById('confirm-modal');
+const startTimeInput = document.getElementById('start-time');
+const endTimeInput = document.getElementById('end-time');
+const confirmText = document.getElementById('confirm-text');
+const saveTimeBtn = document.getElementById('save-time-btn');
+const closeTimeBtn = document.getElementById('close-time-btn');
+const confirmBtn = document.getElementById('confirm-btn');
+const cancelBtn = document.getElementById('cancel-btn');
+let selectedDate = null;
+let currentUser = 'current-user'; // Имя текущего пользователя
 
 function renderCalendar() {
     const today = new Date();
@@ -34,7 +27,7 @@ function renderCalendar() {
     }
 }
 
-function handleDateClick(date: string) {
+function handleDateClick(date) {
     selectedDate = date;
 
     if (bookings[date]) {
@@ -59,12 +52,12 @@ saveTimeBtn.addEventListener('click', () => {
         return;
     }
 
-    if (!bookings[selectedDate!]) bookings[selectedDate!] = [];
+    if (!bookings[selectedDate]) bookings[selectedDate] = [];
 
-    bookings[selectedDate!].push({ date: selectedDate!, startTime, endTime, user: currentUser });
+    bookings[selectedDate].push({ date: selectedDate, startTime, endTime, user: currentUser });
     localStorage.setItem('bookings', JSON.stringify(bookings));
     timeModal.classList.add('hidden');
-    alert(`Вы успешно забронировали ${selectedDate!} ${startTime} - ${endTime}`);
+    alert(`Вы успешно забронировали ${selectedDate} ${startTime} - ${endTime}`);
     location.reload();
 });
 
@@ -73,7 +66,7 @@ closeTimeBtn.addEventListener('click', () => {
 });
 
 confirmBtn.addEventListener('click', () => {
-    bookings[selectedDate!] = bookings[selectedDate!].filter(b => b.user !== currentUser);
+    bookings[selectedDate] = bookings[selectedDate].filter(b => b.user !== currentUser);
     localStorage.setItem('bookings', JSON.stringify(bookings));
     confirmModal.classList.add('hidden');
     alert(`Бронь снята.`);
@@ -84,4 +77,4 @@ cancelBtn.addEventListener('click', () => {
     confirmModal.classList.add('hidden');
 });
 
-renderCalendar();
+document.addEventListener('DOMContentLoaded', renderCalendar);
