@@ -36,6 +36,7 @@ h1 {
   justify-content: space-between;
   width: 100%;
   padding: 10px;
+  background-color: #333; /* Добавили фон для календаря */
 }
 
 .nav-button {
@@ -55,6 +56,7 @@ h1 {
 #month-year {
   font-size: 1.5rem;
   font-weight: bold;
+  color: white; /* Цвет текста месяца */
 }
 
 .calendar-days {
