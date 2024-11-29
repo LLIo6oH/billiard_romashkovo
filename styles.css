@@ -1,95 +1,94 @@
-/* Основные стили */
+/* Общие стили */
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-color: #0A0A0A;
-    color: #F8F8F8;
-    margin: 0;
-    padding: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #121212;
+  color: white;
+  margin: 0;
+  padding: 0;
 }
 
-/* Заголовок */
 header {
-    text-align: center;
-    padding: 1rem;
-    background-color: #CFC493; /* Золотистый цвет */
-    color: #101820; /* Черный цвет */
-    border-bottom: 2px solid #FFB81C;
+  background-color: #D9B91A; /* Цвет заголовка */
+  text-align: center;
+  padding: 20px;
+  font-size: 2rem;
 }
 
 h1 {
-    font-size: 2.5rem;
-    margin: 0;
+  margin: 0;
 }
 
-/* Календарь */
-#calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1rem;
-    max-width: 700px;
-    margin: 2rem auto;
+.calendar-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
 }
 
-.date {
-    padding: 1rem;
-    text-align: center;
-    background-color: #333333;
-    border: 2px solid #CFC493;
-    color: #F8F8F8;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
 }
 
-.date:hover {
-    background-color: #FFB81C;
-    transform: scale(1.05);
+.calendar button {
+  background-color: #333;
+  color: white;
+  border: 1px solid #444;
+  padding: 20px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s;
 }
 
-.date.unavailable {
-    background-color: #666;
-    cursor: not-allowed;
+.calendar button:hover {
+  background-color: #555;
 }
 
-/* Модальные окна */
-.hidden {
-    display: none;
+.calendar button.booked {
+  background-color: #b91a1a; /* Забронированные дни */
 }
 
-.modal-content {
-    background-color: #101820;
-    padding: 2rem;
-    border-radius: 8px;
-    text-align: center;
-    color: #F8F8F8;
+.calendar button.booked:hover {
+  background-color: #c62b2b;
 }
 
-#time-modal, #confirm-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Прозрачное затемнение */
+  z-index: 999;
 }
 
-.modal-buttons button {
-    padding: 0.5rem 1rem;
-    margin: 0.5rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #1a1a1a;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-#save-time-btn, #confirm-btn {
-    background-color: #FFB81C;
-    color: #101820;
+.modal.hidden {
+  display: none;
 }
 
-#close-time-btn, #cancel-btn {
-    background-color: #333333;
-    color: #F8F8F8;
+button {
+  background-color: #D9B91A;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #c29d18;
 }
