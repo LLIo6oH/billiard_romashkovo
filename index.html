@@ -12,9 +12,26 @@
     </header>
     <main>
         <div id="calendar"></div>
-        <div id="modal" class="hidden">
+
+        <div id="time-modal" class="hidden">
             <div class="modal-content">
-                <p id="modal-text"></p>
+                <h2>Выберите время</h2>
+                <label>Начало:
+                    <input type="time" id="start-time" required>
+                </label>
+                <label>Конец:
+                    <input type="time" id="end-time" required>
+                </label>
+                <div class="modal-buttons">
+                    <button id="save-time-btn">ОК</button>
+                    <button id="close-time-btn">Отмена</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="confirm-modal" class="hidden">
+            <div class="modal-content">
+                <p id="confirm-text"></p>
                 <div class="modal-buttons">
                     <button id="confirm-btn">Да</button>
                     <button id="cancel-btn">Нет</button>
