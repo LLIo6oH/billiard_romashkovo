@@ -44,31 +44,19 @@ closeModalButton.addEventListener("click", () => {
   endTimeInput.value = "";
 });
 
-// Функция для получения полного названия месяца по номеру месяца
-function getMonthName(monthIndex) {
-    const months = [
-        "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", 
-        "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-    ];
-    return months[monthIndex];
-}
+// Подтверждение бронирования
+confirmBookingButton.addEventListener("click", () => {
+  const startTime = startTimeInput.value;
+  const endTime = endTimeInput.value;
 
-// Обработчик подтверждения
-confirmButton.addEventListener("click", function() {
-    const startTime = startTimeInput.value.trim();
-    const endTime = endTimeInput.value.trim();
-
-    if (startTime && endTime) {
-        const monthName = getMonthName(currentMonth); // Получаем название месяца
-        alert(`Вы успешно забронировали ${selectedDay} ${monthName} с ${startTime} до ${endTime}`);
-
-        // Закрываем модальное окно и очищаем поля
-        timeModal.style.display = "none";
-        startTimeInput.value = "";
-        endTimeInput.value = "";
-    } else {
-        alert("Пожалуйста, выберите оба времени.");
-    }
+  if (startTime && endTime) {
+    alert(`Вы успешно забронировали ${selectedDay} день с ${startTime} до ${endTime}`);
+    timeModal.style.display = "none";
+    startTimeInput.value = "";
+    endTimeInput.value = "";
+  } else {
+    alert("Пожалуйста, выберите оба времени.");
+  }
 });
 
 // Навигация по месяцам
