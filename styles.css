@@ -133,3 +133,9 @@ button {
 button:hover {
   background-color: #a17e12;
 }
+
+button.booked {
+  background-color: #ff6347;  /* Красный цвет для забронированных дней */
+  color: white;
+  pointer-events: none; /* Запрещаем клик на забронированные дни */
+}
