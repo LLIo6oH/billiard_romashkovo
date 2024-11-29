@@ -1,16 +1,23 @@
 type Booking = {
     date: string;
-    time: string;
-    user: string; // Placeholder for user info
+    startTime: string;
+    endTime: string;
+    user: string; // Имя пользователя
 };
 
-const bookings: Record<string, Booking> = JSON.parse(localStorage.getItem('bookings') || '{}');
+const bookings: Record<string, Booking[]> = JSON.parse(localStorage.getItem('bookings') || '{}');
 const calendar = document.getElementById('calendar')!;
-const modal = document.getElementById('modal')!;
-const modalText = document.getElementById('modal-text')!;
+const timeModal = document.getElementById('time-modal')!;
+const confirmModal = document.getElementById('confirm-modal')!;
+const startTimeInput = document.getElementById('start-time') as HTMLInputElement;
+const endTimeInput = document.getElementById('end-time') as HTMLInputElement;
+const confirmText = document.getElementById('confirm-text')!;
+const saveTimeBtn = document.getElementById('save-time-btn')!;
+const closeTimeBtn = document.getElementById('close-time-btn')!;
 const confirmBtn = document.getElementById('confirm-btn')!;
 const cancelBtn = document.getElementById('cancel-btn')!;
 let selectedDate: string | null = null;
+let currentUser = 'current-user'; // Замените на реальное имя пользователя
 
 function renderCalendar() {
     const today = new Date();
@@ -22,43 +29,59 @@ function renderCalendar() {
         dateElement.className = 'date';
         dateElement.textContent = day.toString();
 
-        if (bookings[date]) {
-            dateElement.classList.add('unavailable');
-        }
-
         dateElement.addEventListener('click', () => handleDateClick(date));
         calendar.appendChild(dateElement);
     }
 }
 
 function handleDateClick(date: string) {
+    selectedDate = date;
+
     if (bookings[date]) {
-        selectedDate = date;
-        modalText.textContent = `Вы точно хотите снять бронь с ${date}?`;
-        modal.classList.remove('hidden');
-    } else {
-        const time = prompt('Введите период времени (чч:мм - чч:мм):');
-        if (time) {
-            bookings[date] = { date, time, user: 'current-user' }; // Replace with actual user data
-            localStorage.setItem('bookings', JSON.stringify(bookings));
-            alert(`Вы забронировали ${date} ${time}`);
-            location.reload();
+        const booking = bookings[date].find(b => b.user === currentUser);
+        if (booking) {
+            confirmText.textContent = `Вы точно хотите снять бронь на ${booking.startTime} - ${booking.endTime}?`;
+            confirmModal.classList.remove('hidden');
+        } else {
+            alert('Это время уже забронировано другим пользователем.');
         }
+    } else {
+        timeModal.classList.remove('hidden');
     }
 }
 
-confirmBtn.addEventListener('click', () => {
-    if (selectedDate) {
-        delete bookings[selectedDate];
-        localStorage.setItem('bookings', JSON.stringify(bookings));
-        alert(`Бронь снята с ${selectedDate}`);
-        location.reload();
+saveTimeBtn.addEventListener('click', () => {
+    const startTime = startTimeInput.value;
+    const endTime = endTimeInput.value;
+
+    if (!startTime || !endTime) {
+        alert('Пожалуйста, выберите время.');
+        return;
     }
+
+    if (!bookings[selectedDate!]) bookings[selectedDate!] = [];
+
+    bookings[selectedDate!].push({ date: selectedDate!, startTime, endTime, user: currentUser });
+    localStorage.setItem('bookings', JSON.stringify(bookings));
+    timeModal.classList.add('hidden');
+    alert(`Вы успешно забронировали ${selectedDate!} ${startTime} - ${endTime}`);
+    location.reload();
+});
+
+closeTimeBtn.addEventListener('click', () => {
+    timeModal.classList.add('hidden');
+});
+
+confirmBtn.addEventListener('click', () => {
+    bookings[selectedDate!] = bookings[selectedDate!].filter(b => b.user !== currentUser);
+    localStorage.setItem('bookings', JSON.stringify(bookings));
+    confirmModal.classList.add('hidden');
+    alert(`Бронь снята.`);
+    location.reload();
 });
 
 cancelBtn.addEventListener('click', () => {
-    modal.classList.add('hidden');
-    selectedDate = null;
+    confirmModal.classList.add('hidden');
 });
 
 renderCalendar();
