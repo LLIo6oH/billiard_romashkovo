@@ -8,6 +8,12 @@ const confirmBookingButton = document.getElementById("confirm-booking");
 const startTimeInput = document.getElementById("start-time");
 const endTimeInput = document.getElementById("end-time");
 
+// Массив с названиями месяцев
+const months = [
+  "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", 
+  "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+];
+
 let currentDate = new Date();
 let selectedDay = null;
 
@@ -17,6 +23,7 @@ function generateCalendar(date) {
   const month = date.getMonth();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+  // Отображаем название месяца и год
   monthYearDisplay.textContent = `${months[month]} ${year}`;
 
   // Очистка старых данных
@@ -46,11 +53,14 @@ closeModalButton.addEventListener("click", () => {
 
 // Подтверждение бронирования
 confirmBookingButton.addEventListener("click", () => {
-  const startTime = startTimeInput.value;
-  const endTime = endTimeInput.value;
+  const startTime = startTimeInput.value.trim();
+  const endTime = endTimeInput.value.trim();
 
   if (startTime && endTime) {
-    alert(`Вы успешно забронировали ${selectedDay} день с ${startTime} до ${endTime}`);
+    const monthName = months[currentDate.getMonth()]; // Получаем название месяца
+    alert(`Вы успешно забронировали ${selectedDay} ${monthName} с ${startTime} до ${endTime}`);
+    
+    // Закрываем модальное окно и очищаем поля
     timeModal.style.display = "none";
     startTimeInput.value = "";
     endTimeInput.value = "";
@@ -69,12 +79,6 @@ nextMonthButton.addEventListener("click", () => {
   currentDate.setMonth(currentDate.getMonth() + 1);
   generateCalendar(currentDate);
 });
-
-// Массив с названиями месяцев
-const months = [
-  "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", 
-  "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-];
 
 // Инициализация с текущего месяца
 generateCalendar(currentDate);
