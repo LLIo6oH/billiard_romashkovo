@@ -17,6 +17,10 @@ const months = [
 let currentDate = new Date();
 let selectedDay = null;
 
+// Структура для хранения информации о бронированиях
+// Это объект, где ключ - день месяца, а значение - время бронирования
+let bookings = {};
+
 // Функция генерации календаря
 function generateCalendar(date) {
   const year = date.getFullYear();
@@ -33,6 +37,13 @@ function generateCalendar(date) {
   for (let i = 1; i <= daysInMonth; i++) {
     const dayButton = document.createElement("button");
     dayButton.textContent = i;
+
+    // Если для этого дня есть бронирование, добавляем класс для выделения
+    if (bookings[i]) {
+      dayButton.classList.add("booked");
+    }
+
+    // Добавляем обработчик клика для открытия модального окна
     dayButton.addEventListener("click", () => openTimeModal(i));
     calendarDays.appendChild(dayButton);
   }
@@ -59,11 +70,17 @@ confirmBookingButton.addEventListener("click", () => {
   if (startTime && endTime) {
     const monthName = months[currentDate.getMonth()]; // Получаем название месяца
     alert(`Вы успешно забронировали ${selectedDay} ${monthName} с ${startTime} до ${endTime}`);
-    
+
+    // Сохраняем информацию о бронировании
+    bookings[selectedDay] = { startTime, endTime };
+
     // Закрываем модальное окно и очищаем поля
     timeModal.style.display = "none";
     startTimeInput.value = "";
     endTimeInput.value = "";
+
+    // Перегенерировать календарь для обновления отображения забронированных дней
+    generateCalendar(currentDate);
   } else {
     alert("Пожалуйста, выберите оба времени.");
   }
