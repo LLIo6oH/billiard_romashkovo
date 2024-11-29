@@ -26,6 +26,19 @@
     <div id="calendar-days" class="calendar-days"></div>
   </div>
 
+  <!-- Модальное окно для выбора времени -->
+  <div id="time-modal" class="modal">
+    <div class="modal-content">
+      <span id="close-modal" class="close">&times;</span>
+      <h3>Выберите время для брони</h3>
+      <label for="start-time">С:</label>
+      <input type="time" id="start-time" required>
+      <label for="end-time">До:</label>
+      <input type="time" id="end-time" required>
+      <button id="confirm-booking" class="btn">Подтвердить</button>
+    </div>
+  </div>
+
   <script src="scripts.js"></script>
 </body>
 </html>
