@@ -1,3 +1,8 @@
+// Инициализация WebApp для Telegram
+if (window.Telegram?.WebApp) {
+    Telegram.WebApp.ready(); // Инициализация WebApp
+}
+
 const calendarDays = document.getElementById("calendar-days");
 const monthYearDisplay = document.getElementById("month-year");
 const prevMonthButton = document.getElementById("prev-month");
