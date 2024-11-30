@@ -107,6 +107,7 @@ async def handle_booking(message: Message):
                 return
 
         # Сохраняем бронирование
+        print(f"Сохраняем бронирование: {booking_date}, {start_time}, {end_time}")
         await save_booking(pool, booking_date, start_time, end_time)
         await message.answer(f"Бронирование успешно создано: {booking_date} с {start_time} до {end_time}")
     except ValueError:
