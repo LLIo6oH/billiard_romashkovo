@@ -119,13 +119,25 @@ async def handle_booking(message: Message):
 async def handle_webhook(request):
     """Обрабатывает запросы от Telegram через вебхук."""
     try:
+        # Логируем входящий запрос
+        print("Получен запрос на /webhook")
+        
+        # Получаем JSON данные из запроса
         data = await request.json()
+        print(f"Полученные данные: {data}")
+        
+        # Преобразуем данные в объект Update
         update = Update(**data)  # Преобразуем JSON в объект Update
-        await dp.feed_update(bot, update)  # Передаем обновление в диспетчер
+        
+        # Обрабатываем обновление
+        await dp.feed_update(bot, update)
+        
     except Exception as e:
+        # Логируем ошибки
         print(f"Ошибка обработки вебхука: {e}")
         return web.Response(status=500)  # Возвращаем ошибку 500 для Telegram
-    return web.Response()
+        
+    return web.Response(status=200)  # Ответ успешной обработки
 
 async def main():
     print(f"Main Start")
@@ -148,6 +160,7 @@ async def main():
     # Создаём приложение aiohttp
     app = web.Application()
     app.router.add_post("/webhook", handle_webhook)
+    print("Web service is running and listening on /webhook")
 
     # Запускаем сервер
     runner = web.AppRunner(app)
