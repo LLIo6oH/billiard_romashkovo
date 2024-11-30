@@ -165,7 +165,8 @@ async def main():
     # Запускаем сервер
     runner = web.AppRunner(app)
     await runner.setup()
-    site = web.TCPSite(runner, host="0.0.0.0", port=4000)
+    port = int(os.getenv("PORT", 4000))  # Если порт не задан, используем 4000 по умолчанию
+    site = web.TCPSite(runner, host="0.0.0.0", port=port)
     await site.start()
 
     print(f"Бот запущен на {webhook_url}")
