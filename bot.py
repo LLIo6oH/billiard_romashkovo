@@ -124,6 +124,7 @@ async def handle_webhook(request):
         await dp.feed_update(bot, update)  # Передаем обновление в диспетчер
     except Exception as e:
         print(f"Ошибка обработки вебхука: {e}")
+        return web.Response(status=500)  # Возвращаем ошибку 500 для Telegram
     return web.Response()
 
 async def main():
