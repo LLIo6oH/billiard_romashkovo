@@ -117,9 +117,12 @@ async def handle_booking(message: Message):
 # Вебхук
 async def handle_webhook(request):
     """Обрабатывает запросы от Telegram через вебхук."""
-    data = await request.json()
-    update = Update.to_object(data)
-    await dp.feed_update(bot, update)
+    try:
+        data = await request.json()
+        update = Update(**data)  # Преобразуем JSON в объект Update
+        await dp.feed_update(bot, update)  # Передаем обновление в диспетчер
+    except Exception as e:
+        print(f"Ошибка обработки вебхука: {e}")
     return web.Response()
 
 async def main():
