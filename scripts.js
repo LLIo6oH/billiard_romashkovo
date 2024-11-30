@@ -1,137 +1,162 @@
-// Инициализация WebApp для Telegram
-if (window.Telegram?.WebApp) {
-    Telegram.WebApp.ready(); // Инициализация WebApp
+/* Общие стили */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #121212;
+  color: white;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Вместо center, чтобы был естественный скроллинг */
+  min-height: 100vh;
 }
 
-const calendarDays = document.getElementById("calendar-days");
-const monthYearDisplay = document.getElementById("month-year");
-const prevMonthButton = document.getElementById("prev-month");
-const nextMonthButton = document.getElementById("next-month");
-const timeModal = document.getElementById("time-modal");
-const closeModalButton = document.getElementById("close-modal");
-const confirmBookingButton = document.getElementById("confirm-booking");
-const startTimeInput = document.getElementById("start-time");
-const endTimeInput = document.getElementById("end-time");
-const bookingsList = document.getElementById("bookings-list"); // Новый элемент для отображения списка броней
-
-// Массив с названиями месяцев
-const months = [
-  "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", 
-  "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-];
-
-let currentDate = new Date();
-let selectedDay = null;
-
-// Структура для хранения информации о бронированиях
-let bookings = {};
-
-// Функция генерации календаря
-function generateCalendar(date) {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  // Отображаем название месяца и год
-  monthYearDisplay.textContent = `${months[month]} ${year}`;
-
-  // Очистка старых данных
-  calendarDays.innerHTML = '';
-
-  // Генерация кнопок для дней месяца
-  for (let i = 1; i <= daysInMonth; i++) {
-    const dayButton = document.createElement("button");
-    dayButton.textContent = i;
-
-    // Если для этого дня есть бронирование, добавляем класс для выделения
-    if (bookings[i] && bookings[i].length > 0) {
-      dayButton.classList.add("booked");
-    }
-
-    // Добавляем обработчик клика для открытия модального окна
-    dayButton.addEventListener("click", () => openTimeModal(i));
-    calendarDays.appendChild(dayButton);
-  }
+header {
+  background-color: #D9B91A; /* Цвет заголовка */
+  text-align: center;
+  padding: 20px;
+  font-size: 2rem;
+  margin-bottom: 20px;
 }
 
-// Функция открытия модального окна для выбора времени
-function openTimeModal(day) {
-  selectedDay = day; // Запоминаем выбранный день
-
-  // Очищаем список броней
-  bookingsList.innerHTML = "";
-
-  // Если на этот день есть брони, отображаем их
-  if (bookings[day] && bookings[day].length > 0) {
-    bookings[day].forEach((booking, index) => {
-      const bookingItem = document.createElement("div");
-      bookingItem.textContent = `${index + 1}. ${booking.startTime} - ${booking.endTime}`;
-      bookingsList.appendChild(bookingItem);
-    });
-  } else {
-    const noBookingsItem = document.createElement("div");
-    noBookingsItem.textContent = "Нет броней на этот день.";
-    bookingsList.appendChild(noBookingsItem);
-  }
-
-  timeModal.style.display = "flex"; // Показываем модальное окно
+h1 {
+  margin: 0;
 }
 
-// Закрытие модального окна
-closeModalButton.addEventListener("click", () => {
-  timeModal.style.display = "none";
-  startTimeInput.value = "";
-  endTimeInput.value = "";
-});
+.calendar-container {
+  width: 100%; /* Календарь занимает всю доступную ширину */
+  padding: 0 10px; /* Отступы, чтобы предотвратить обрезание */
+  box-sizing: border-box; /* Учитываем padding и border в ширине */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-// Подтверждение бронирования
-confirmBookingButton.addEventListener("click", () => {
-  const startTime = startTimeInput.value.trim();
-  const endTime = endTimeInput.value.trim();
+.month-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
 
-  if (startTime && endTime) {
-    // Проверка пересечений с существующими бронями
-    if (bookings[selectedDay]) {
-      for (const booking of bookings[selectedDay]) {
-        if (
-          (startTime >= booking.startTime && startTime < booking.endTime) ||
-          (endTime > booking.startTime && endTime <= booking.endTime) ||
-          (startTime <= booking.startTime && endTime >= booking.endTime)
-        ) {
-          alert("Выбранное время пересекается с существующей бронью.");
-          return;
-        }
-      }
-    } else {
-      bookings[selectedDay] = [];
-    }
+.nav-button {
+  background-color: #333;
+  color: white;
+  border: 1px solid #444;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  margin: 0 10px;
+}
 
-    // Сохраняем новую бронь
-    bookings[selectedDay].push({ startTime, endTime });
+.nav-button:hover {
+  background-color: #555;
+}
 
-    // Закрываем модальное окно и очищаем поля
-    alert(`Вы успешно забронировали ${selectedDay} ${months[currentDate.getMonth()]} с ${startTime} до ${endTime}`);
-    timeModal.style.display = "none";
-    startTimeInput.value = "";
-    endTimeInput.value = "";
+.month-year {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
 
-    // Перегенерировать календарь для обновления отображения забронированных дней
-    generateCalendar(currentDate);
-  } else {
-    alert("Пожалуйста, выберите оба времени.");
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  width: 100%; /* Используем всю доступную ширину */
+  max-width: 500px; /* Максимальная ширина */
+  margin-top: 20px;
+  box-sizing: border-box; /* Учитываем padding и border */
+}
+
+.calendar-days button {
+  background-color: #333;
+  color: white;
+  border: 1px solid #444;
+  padding: 20px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s;
+}
+
+.calendar-days button:hover {
+  background-color: #555;
+}
+
+/* Стили для модального окна */
+.modal {
+  display: none; /* Скрыто по умолчанию */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%; /* Используем процентное значение */
+  max-width: 400px; /* Максимальная ширина */
+  text-align: center;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+input[type="time"] {
+  background-color: #444;
+  border: 1px solid #555;
+  color: white;
+  padding: 5px;
+  margin: 10px 0;
+}
+
+button {
+  background-color: #D9B91A;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #a17e12;
+}
+
+button.booked {
+  background-color: #ff6347; /* Красный цвет для забронированных дней */
+  color: white;
+}
+
+/* Адаптация для малых экранов */
+@media (max-width: 480px) {
+  .nav-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
   }
-});
 
-// Навигация по месяцам
-prevMonthButton.addEventListener("click", () => {
-  currentDate.setMonth(currentDate.getMonth() - 1);
-  generateCalendar(currentDate);
-});
+  .calendar-days button {
+    padding: 10px;
+    font-size: 1rem;
+  }
 
-nextMonthButton.addEventListener("click", () => {
-  currentDate.setMonth(currentDate.getMonth() + 1);
-  generateCalendar(currentDate);
-});
-
-// Инициализация с текущего месяца
-generateCalendar(currentDate);
+  .month-year {
+    font-size: 1.2rem;
+  }
+}
