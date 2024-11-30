@@ -127,6 +127,7 @@ async def handle_webhook(request):
     return web.Response()
 
 async def main():
+    print(f"Main Start")
     # Создаём пул соединений с базой данных
     pool = await create_db_pool()
 
