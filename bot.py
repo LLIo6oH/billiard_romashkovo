@@ -1,6 +1,7 @@
 from aiogram import Bot, Dispatcher, Router
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo, Update
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiohttp import web
 from aiogram import F
 import asyncio
 
@@ -20,7 +21,7 @@ async def send_calendar_link(message: Message):
                 [
                     InlineKeyboardButton(
                         text="Открыть календарь",
-                        web_app=WebAppInfo(url="https://llio6oh.github.io/billiard_romashkovo")  # или ngrok-ссылка
+                        web_app=WebAppInfo(url="https://llio6oh.github.io/billiard_romashkovo")
                     )
                 ]
             ]
@@ -30,8 +31,30 @@ async def send_calendar_link(message: Message):
 # Регистрация маршрутов
 dp.include_router(router)
 
+async def handle_webhook(request):
+    """Обработка запросов от Telegram через вебхук"""
+    data = await request.json()
+    update = Update.to_object(data)
+    await dp.feed_update(bot, update)
+    return web.Response()
+
 async def main():
-    await dp.start_polling(bot)
+    # Запускаем приложение aiohttp
+    app = web.Application()
+    app.router.add_post("/webhook", handle_webhook)  # Слушаем /webhook
+
+    # Устанавливаем webhook в Telegram
+    webhook_url = "https://billiard-romashkovo.onrender.com"  # Укажите URL вашего сервера
+    await bot.set_webhook(webhook_url)
+
+    # Запускаем aiohttp
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, host="0.0.0.0", port=4000)
+    await site.start()
+
+    print(f"Бот запущен на {webhook_url}")
+    await asyncio.Event().wait()
 
 if __name__ == "__main__":
     asyncio.run(main())
