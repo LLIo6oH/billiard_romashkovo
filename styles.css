@@ -8,8 +8,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
+  justify-content: flex-start; /* Вместо center, чтобы был естественный скроллинг */
+  min-height: 100vh;
 }
 
 header {
@@ -25,10 +25,12 @@ h1 {
 }
 
 .calendar-container {
+  width: 100%; /* Календарь занимает всю доступную ширину */
+  padding: 0 10px; /* Отступы, чтобы предотвратить обрезание */
+  box-sizing: border-box; /* Учитываем padding и border в ширине */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
 .month-nav {
@@ -63,8 +65,10 @@ h1 {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 10px;
-  max-width: 500px;
+  width: 100%; /* Используем всю доступную ширину */
+  max-width: 500px; /* Максимальная ширина */
   margin-top: 20px;
+  box-sizing: border-box; /* Учитываем padding и border */
 }
 
 .calendar-days button {
@@ -99,7 +103,8 @@ h1 {
   background-color: #333;
   padding: 20px;
   border-radius: 10px;
-  width: 300px;
+  width: 90%; /* Используем процентное значение */
+  max-width: 400px; /* Максимальная ширина */
   text-align: center;
 }
 
@@ -135,6 +140,23 @@ button:hover {
 }
 
 button.booked {
-  background-color: #ff6347;  /* Красный цвет для забронированных дней */
+  background-color: #ff6347; /* Красный цвет для забронированных дней */
   color: white;
+}
+
+/* Адаптация для малых экранов */
+@media (max-width: 480px) {
+  .nav-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .calendar-days button {
+    padding: 10px;
+    font-size: 1rem;
+  }
+
+  .month-year {
+    font-size: 1.2rem;
+  }
 }
