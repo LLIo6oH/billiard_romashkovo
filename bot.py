@@ -15,7 +15,7 @@ db_config = {
     'host': 'dpg-ct5l2ujtq21c7399jbag-a',
     'user': 'billiardromashkovo_user',
     'password': 'US1b3ybv3DGEbyXnDl09PCWwslf715aC',
-    'dbname': 'billiardromashkovo'
+    'database': 'billiardromashkovo'
 }
 
 # Создаем бота и диспетчер
